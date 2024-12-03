@@ -10,21 +10,25 @@ class TransactionController extends Controller
     // แสดงรายการการใช้จ่ายและคำนวณยอดรวม
     public function index(Request $request)
     {
-        $month = $request->input('month');
-        if ($month) {
-            $transactions = Transaction::whereMonth('expense_date', date('m', strtotime($month)))
-                                        ->whereYear('expense_date', date('Y', strtotime($month)))
-                                        ->get();
-        } else {
-            $transactions = Transaction::all();
+        $query = Transaction::query();
+    
+        // ค้นหาตามเดือนที่เลือก
+        if ($request->has('month') && $request->month) {
+            $month = $request->month;
+            $query->whereMonth('expense_date', '=', date('m', strtotime($month)))
+                  ->whereYear('expense_date', '=', date('Y', strtotime($month)));
         }
     
+        $transactions = $query->orderBy('expense_date', 'desc')->get();
+    
+        // คำนวณสรุปค่าใช้จ่าย
         $totalIncome = $transactions->where('type', 'income')->sum('amount');
         $totalExpense = $transactions->where('type', 'expense')->sum('amount');
         $balance = $totalIncome - $totalExpense;
     
         return view('transactions.index', compact('transactions', 'totalIncome', 'totalExpense', 'balance'));
     }
+    
     
 
     // บันทึกข้อมูลการใช้จ่ายใหม่

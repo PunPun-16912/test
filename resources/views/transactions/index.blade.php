@@ -10,6 +10,19 @@
     <div class="container mt-5">
         <h1 class="mb-4">Transactions</h1>
 
+        <!-- สรุปยอดรายรับ รายจ่าย -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <h4>Total Income: {{ number_format($totalIncome, 2) }} THB</h4>
+            </div>
+            <div class="col-md-3">
+                <h4>Total Expense: {{ number_format($totalExpense, 2) }} THB</h4>
+            </div>
+            <div class="col-md-3">
+                <h4>Balance: {{ number_format($balance, 2) }} THB</h4>
+            </div>
+        </div>
+
         <!-- ฟอร์มสำหรับเพิ่มรายการ -->
         <form action="{{ route('transactions.store') }}" method="POST" class="mb-4">
             @csrf
